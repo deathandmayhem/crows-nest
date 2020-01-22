@@ -1,0 +1,44 @@
+---
+parser: "@typescript-eslint/parser"
+parserOptions:
+  allowImportExportEverywhere: false
+plugins:
+  - "meteor"
+  - "@typescript-eslint"
+extends:
+  - "airbnb"
+  - "plugin:meteor/recommended"
+  - "plugin:import/errors"
+  - "plugin:import/warnings"
+  - "plugin:@typescript-eslint/eslint-recommended"
+  - "plugin:@typescript-eslint/recommended"
+settings:
+  "import/resolver":
+    meteor:
+      extensions: [".js", ".jsx", ".ts", ".tsx"]
+    typescript:
+      extensions: [".js", ".jsx", ".ts", ".tsx"]
+rules:
+  "import/extensions": ["error", "never"]
+
+  # Imports should be grouped, and sorted within the group. Meteor imports
+  # are their own group, after built-ins and before other external libraries
+  "import/order":
+    - "error"
+    - "alphabetize": {"order": "asc"}
+      "pathGroups":
+        - "pattern": "meteor/**"
+          "group": "external"
+          "position": "before"
+      "pathGroupsExcludedImportTypes": ["builtin"]
+      "newlines-between": "never"
+
+  # This is an idealistic rule that doesn't seem to have ever encountered
+  # reality
+  "@typescript-eslint/no-explicit-any": ["off"]
+overrides:
+  - files: "types/**"
+    rules:
+      # type declarations for other libraries don't get to choose their export
+      # structure
+      "import/prefer-default-export": ["off"]
