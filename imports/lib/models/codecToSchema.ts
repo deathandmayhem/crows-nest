@@ -16,6 +16,7 @@ export type ValidatableCodec =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t.LiteralType<any> |
   // compound types
+  t.ArrayType<ValidatableCodec> |
   t.InterfaceType<ValidatableProps> |
   t.PartialType<ValidatableProps> |
   t.IntersectionType<[ValidatableCodec, ValidatableCodec, ...ValidatableCodec[]]> |
@@ -87,6 +88,13 @@ function literalToSchema(codec: t.LiteralType<string | number | boolean>): JSONS
   };
 }
 
+function arrayToSchema<P extends ValidatableCodec>(codec: t.ArrayType<P>): JSONSchema {
+  return {
+    bsonType: 'array',
+    items: codecToSchema(codec.type),
+  };
+}
+
 function interfaceToSchema<P extends ValidatableProps>(codec: t.InterfaceType<P>): JSONSchema {
   const properties: Record<string, JSONSchema> = {};
   Object.entries(codec.props).forEach(([name, childCodec]) => {
@@ -145,6 +153,9 @@ function codecToSchema(codec: ValidatableCodec): JSONSchema {
   }
   if (codec instanceof t.LiteralType) {
     return literalToSchema(codec);
+  }
+  if (codec instanceof t.ArrayType) {
+    return arrayToSchema(codec);
   }
   if (codec instanceof t.InterfaceType) {
     return interfaceToSchema(codec);
