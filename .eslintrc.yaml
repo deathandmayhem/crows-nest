@@ -19,6 +19,11 @@ settings:
     typescript:
       extensions: [".js", ".jsx", ".ts", ".tsx"]
 rules:
+  # noImplicitReturns requires us to declare return types, so TypeScript will
+  # already warn if we fail to return a value, and it can tell when an explicit
+  # return is unnecessary (e.g. if a function narrows a type to never)
+  "consistent-return": ["off"]
+
   "import/extensions": ["error", "never"]
 
   # Imports should be grouped, and sorted within the group. Meteor imports

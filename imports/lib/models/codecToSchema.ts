@@ -35,6 +35,16 @@ interface JSONSchema {
   items?: JSONSchema;
 }
 
+// TypeScript won't treat these equality comparisons as type guards, so we have
+// to make them one
+function isInt(codec: t.Type<any>): codec is typeof t.Int {
+  return codec === t.Int;
+}
+
+function isDate(codec: t.Type<any>): codec is typeof date {
+  return codec === date;
+}
+
 /* eslint-disable @typescript-eslint/no-use-before-define,@typescript-eslint/no-unused-vars */
 
 function nullToSchema(_codec: t.NullType): JSONSchema {
@@ -132,6 +142,10 @@ function unionToSchema(codec: t.UnionType<ValidatableCodec[]>): JSONSchema {
   };
 }
 
+function unreachable(_codec: never): never {
+  throw new Error('unreachable');
+}
+
 function codecToSchema(codec: ValidatableCodec): JSONSchema {
   if (codec instanceof t.NullType) {
     return nullToSchema(codec);
@@ -139,7 +153,7 @@ function codecToSchema(codec: ValidatableCodec): JSONSchema {
   if (codec instanceof t.BooleanType) {
     return booleanToSchema(codec);
   }
-  if (codec === t.Int) {
+  if (isInt(codec)) {
     return intToSchema(codec);
   }
   if (codec instanceof t.NumberType) {
@@ -147,9 +161,6 @@ function codecToSchema(codec: ValidatableCodec): JSONSchema {
   }
   if (codec instanceof t.StringType) {
     return stringToSchema(codec);
-  }
-  if (codec === date) {
-    return dateToSchema(codec);
   }
   if (codec instanceof t.LiteralType) {
     return literalToSchema(codec);
@@ -169,7 +180,10 @@ function codecToSchema(codec: ValidatableCodec): JSONSchema {
   if (codec instanceof t.UnionType) {
     return unionToSchema(codec);
   }
-  throw new Error('unreachable');
+  if (isDate(codec)) {
+    return dateToSchema(codec);
+  }
+  unreachable(codec);
 }
 
 /* eslint-enable @typescript-eslint/no-use-before-define,@typescript-eslint/no-unused-vars */
