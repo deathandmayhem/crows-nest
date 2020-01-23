@@ -41,6 +41,8 @@ rules:
   # This is an idealistic rule that doesn't seem to have ever encountered
   # reality
   "@typescript-eslint/no-explicit-any": ["off"]
+
+  "@typescript-eslint/no-namespace": ["off"]
 overrides:
   - files: "types/**"
     rules:
