@@ -13,7 +13,7 @@
   "scripts": {
     "start": "meteor run",
     "lint": "tsc --noEmit && eslint --ext js,jsx,ts,tsx .",
-    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test": "tsd && meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
@@ -27,13 +27,6 @@
     "newtype-ts": "^0.3.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
-  },
-  "meteor": {
-    "mainModule": {
-      "client": "client/main.ts",
-      "server": "server/main.ts"
-    },
-    "testModule": "tests/main.ts"
   },
   "devDependencies": {
     "@types/meteor": "^1.4.39",
@@ -49,6 +42,19 @@
     "eslint-plugin-meteor": "^6.0.0",
     "eslint-plugin-react": "^7.18.0",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-tsdoc": "^0.2.1",
+    "tsd": "^0.11.0",
     "typescript": "^3.7.5"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.ts",
+      "server": "server/main.ts"
+    },
+    "testModule": "tests/main.ts"
+  },
+  "types": "types/index.d.ts",
+  "tsd": {
+    "directory": "tests/types"
   }
 }

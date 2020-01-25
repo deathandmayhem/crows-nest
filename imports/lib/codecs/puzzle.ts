@@ -1,22 +1,15 @@
 import t from 'io-ts';
+import autoValueId from '../schemas/autoValueId';
+import brandedId from '../schemas/brandedId';
 import { BaseCodec } from './base';
 
-interface PuzzleIdBrand {
-  readonly PuzzleId: unique symbol;
-}
-
-export const PuzzleIdCodec = t.brand(
-  t.string,
-  (id): id is t.Branded<string, PuzzleIdBrand> => !!id,
-  'PuzzleId',
-);
-
+export const PuzzleIdCodec = brandedId('PuzzleId');
 export type PuzzleId = t.TypeOf<typeof PuzzleIdCodec>;
 
 export const PuzzleCodec = t.intersection([
   BaseCodec,
   t.type({
-    _id: PuzzleIdCodec,
+    _id: autoValueId('puz', PuzzleIdCodec),
     name: t.string,
   }),
 ], 'Puzzle');
