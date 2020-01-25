@@ -11,7 +11,7 @@ export type ValidatableCodec =
   t.BooleanType |
   typeof t.Int |
   t.NumberType |
-  t.StringType |
+  t.StringType | t.BrandC<t.StringC, any> |
   typeof date |
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t.LiteralType<any> |
@@ -147,14 +147,21 @@ function unreachable(_codec: never): never {
 }
 
 function codecToSchema(codec: ValidatableCodec): JSONSchema {
+  if (isInt(codec)) {
+    return intToSchema(codec);
+  }
+  if (isDate(codec)) {
+    return dateToSchema(codec);
+  }
+  if (codec instanceof t.RefinementType) {
+    // For refinement types, just unwrap them
+    return codecToSchema(codec.type);
+  }
   if (codec instanceof t.NullType) {
     return nullToSchema(codec);
   }
   if (codec instanceof t.BooleanType) {
     return booleanToSchema(codec);
-  }
-  if (isInt(codec)) {
-    return intToSchema(codec);
   }
   if (codec instanceof t.NumberType) {
     return numberToSchema(codec);
@@ -179,9 +186,6 @@ function codecToSchema(codec: ValidatableCodec): JSONSchema {
   }
   if (codec instanceof t.UnionType) {
     return unionToSchema(codec);
-  }
-  if (isDate(codec)) {
-    return dateToSchema(codec);
   }
   unreachable(codec);
 }

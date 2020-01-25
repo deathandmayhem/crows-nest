@@ -33,16 +33,16 @@ declare module 'meteor/mongo' {
   }
 }
 
-export default class ValidatedCollection<T extends {_id: string}>
+export default class ValidatedCollection<T extends {_id: t.Branded<string, any>}>
   extends Mongo.Collection<T> {
   public name: string;
 
-  public codec: t.Type<T> & ValidatableCodec
+  public codec: t.Type<T, any> & ValidatableCodec
 
   // Don't accept any options for collections. We don't want people overriding
   // the ID type, nor do we want transformations (since that is effectively a
   // map on the return value)
-  constructor(name: string, codec: t.Type<T> & ValidatableCodec) {
+  constructor(name: string, codec: t.Type<T, any> & ValidatableCodec) {
     super(name);
     this.name = name;
     this.codec = codec;
