@@ -8,7 +8,7 @@ import codecToSchema, { ValidatableCodec } from './codecToSchema';
 
 type FindSelector<T> = Mongo.Selector<T> | string;
 export type FindOneOptions<T, U extends MongoFieldsSelector<T>> = {
-  sort?: [{ [k in keyof T]: -1 | 1 }];
+  sort?: { [k in keyof T]: -1 | 1 };
   skip?: number;
   fields?: U;
 }
