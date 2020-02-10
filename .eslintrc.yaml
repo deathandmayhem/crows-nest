@@ -4,6 +4,7 @@ parserOptions:
   allowImportExportEverywhere: false
 plugins:
   - "meteor"
+  - "tsdoc"
   - "@typescript-eslint"
 extends:
   - "airbnb"
@@ -23,6 +24,7 @@ rules:
   # already warn if we fail to return a value, and it can tell when an explicit
   # return is unnecessary (e.g. if a function narrows a type to never)
   "consistent-return": ["off"]
+  "default-case": ["off"]
 
   "import/extensions": ["error", "never"]
 
@@ -38,9 +40,16 @@ rules:
       "pathGroupsExcludedImportTypes": ["builtin"]
       "newlines-between": "never"
 
+  "tsdoc/syntax": ["error"]
+
   # This is an idealistic rule that doesn't seem to have ever encountered
   # reality
   "@typescript-eslint/no-explicit-any": ["off"]
+
+  # Use underscore prefixes on arguments to indicate that they're unused
+  "@typescript-eslint/no-unused-vars":
+    - "error"
+    - "argsIgnorePattern": "^_"
 
   "@typescript-eslint/no-namespace": ["off"]
 overrides:
