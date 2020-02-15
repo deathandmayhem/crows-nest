@@ -22,3 +22,5 @@ standard-minifier-js@2.6.0
 typescript@3.7.2
 webapp@1.8.0
 promise
+meteortesting:mocha
+xolvio:cleaner

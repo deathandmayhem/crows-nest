@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { NpmModuleMongodb } from 'meteor/npm-mongo';
-import { Promise } from 'meteor/promise';
 import t from 'io-ts';
 import SchemaCodec from '../schemas/SchemaCodec';
 import WithoutAutoValues from '../schemas/WithoutAutoValues';
@@ -35,7 +34,7 @@ export default class ValidatedCollection<
 
   public codec: Codec;
 
-  private underlying: Mongo.Collection<T>;
+  public underlying: Mongo.Collection<T>;
 
   // Don't accept any options for collections. We don't want people overriding
   // the ID type, nor do we want transformations (since that is effectively a
@@ -46,18 +45,18 @@ export default class ValidatedCollection<
     this.codec = codec;
   }
 
-  updateSchema(): void {
+  async updateSchema(): Promise<void> {
     if (Meteor.isServer) {
       const validator = { $jsonSchema: codecToSchema(this.codec) };
       const db = this.underlying.rawDatabase() as NpmModuleMongodb.Db;
       try {
-        Promise.await(db.command({ collMod: this.name, validator }));
+        await db.command({ collMod: this.name, validator });
       } catch (e) {
         if (!(e instanceof NpmModuleMongodb.MongoError) || e.code !== 26 /* NamespaceNotFound */) {
           throw e;
         }
 
-        Promise.await(db.createCollection(this.name, { validator }));
+        await db.createCollection(this.name, { validator });
       }
     }
   }
@@ -79,15 +78,6 @@ export default class ValidatedCollection<
   insert(doc: WithoutAutoValues<Codec>, callback?: (err?: Error, id?: T['_id']) => void): T['_id'] {
     const autoValues = generateAutoValues('insert', this.codec);
     return this.underlying.insert({ ...autoValues, ...(doc as any) }, callback);
-  }
-
-  replace(
-    selector: FindSelector<T>,
-    modifier: WithoutAutoValues<Codec>,
-    callback?: (err?: Error, modified?: number) => void,
-  ): number {
-    const autoValues = generateAutoValues('update', this.codec);
-    return this.underlying.update(selector, { ...autoValues, ...(modifier as any) }, {}, callback);
   }
 
   update(
