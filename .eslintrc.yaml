@@ -26,6 +26,11 @@ rules:
   "consistent-return": ["off"]
   "default-case": ["off"]
 
+  "no-underscore-dangle":
+    - "error"
+    - "allow":
+      - "_id"
+
   "import/extensions": ["error", "never"]
 
   # Imports should be grouped, and sorted within the group. Meteor imports
@@ -58,3 +63,11 @@ overrides:
       # type declarations for other libraries don't get to choose their export
       # structure
       "import/prefer-default-export": ["off"]
+  - files: "tests/**"
+    rules:
+      # arrow functions with mocha are discouraged
+      func-names: ["off"]
+      prefer-arrow-callback: ["off"]
+
+      # tests can make unsafe assumptions we don't want in real code
+      "@typescript-eslint/no-non-null-assertion": ["off"]
