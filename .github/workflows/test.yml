@@ -15,10 +15,12 @@ jobs:
       with:
         path: ~/.meteor
         key: ${{ runner.os }}-meteor-install-${{ hashFiles('.meteor/versions') }}
+    - id: meteor_version
+      run: cat .meteor/release | sed -e s/^METEOR@//
     - uses: meteorengineer/setup-meteor@v1
       if: steps.cache-meteor.outputs.cache-hit != 'true'
       with:
-        meteor-release: '1.9'
+        meteor-release: ${{ steps.meteor_version.outputs.value }}
     - uses: actions/cache@v1
       id: cache-npm
       with:
@@ -27,6 +29,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - run: |
+        export PATH="$HOME/.meteor:$PATH"
         npm ci
         npm run lint
         npm test
