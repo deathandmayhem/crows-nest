@@ -63,7 +63,9 @@ type ExclusiveProjectedFields<T, U extends ExclusiveFieldsSelector<T>> = {
  * (i.e. a projection specification) `U`, `MongoProjection<T, U>` is a schema
  * containing only the fields selected by that projection.
  */
-type MongoProjection<T, U extends MongoFieldsSelector<T>> = {} extends U ? T :
+type MongoProjection<T, U extends MongoFieldsSelector<T> | undefined> =
+  Record<string, never> extends U ? T :
+  undefined extends U ? T :
   U extends ExclusiveFieldsSelector<T> ?
   Pick<T, ExclusiveProjectedFields<T, U>> :
   U extends InclusiveFieldsSelector<T> ?

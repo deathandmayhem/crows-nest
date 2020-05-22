@@ -24,7 +24,7 @@ function isDate(codec: t.Type<any>): codec is DateC {
   return codec === date;
 }
 
-/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable no-use-before-define */
 
 function nullToSchema(_codec: t.NullC): JSONSchema {
   return {
@@ -235,6 +235,6 @@ function codecToSchema(codec: SchemaCodec): JSONSchema {
   }
 }
 
-/* eslint-enable @typescript-eslint/no-use-before-define */
+/* eslint-enable no-use-before-define */
 
 export default codecToSchema;

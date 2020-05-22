@@ -65,7 +65,7 @@ export default class ValidatedCollection<
     selector?: FindSelector<T>,
     options?: FindOptions<T, U>,
   ): Mongo.Cursor<MongoProjection<T, U>> {
-    return this.underlying.find(selector, options) as Mongo.Cursor<MongoProjection<T, U>>;
+    return this.underlying.find(selector, options as any) as Mongo.Cursor<MongoProjection<T, U>>;
   }
 
   findOne<U extends MongoFieldsSelector<T>>(
