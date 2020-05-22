@@ -17,7 +17,7 @@ function valueFunc<T extends ScalarCodec>(
   }
 }
 
-/* eslint-disable no-param-reassign,@typescript-eslint/no-use-before-define */
+/* eslint-disable no-param-reassign,no-use-before-define */
 
 function populateInterface<P extends TopLevelProps, Codec extends t.TypeC<P>>(
   operation: Operation,
@@ -79,4 +79,4 @@ export default function generateAutoValues<
   return context;
 }
 
-/* eslint-enable no-param-reassign,@typescript-eslint/no-use-before-define */
+/* eslint-enable no-param-reassign,no-use-before-define */
