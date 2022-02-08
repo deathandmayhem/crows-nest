@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { NpmModuleMongodb } from 'meteor/npm-mongo';
+import { Mongo, MongoInternals } from 'meteor/mongo';
 import t from 'io-ts';
 import SchemaCodec from '../schemas/SchemaCodec';
 import WithoutAutoValues from '../schemas/WithoutAutoValues';
@@ -8,6 +7,8 @@ import codecToSchema from '../schemas/codecToSchema';
 import generateAutoValues from '../schemas/generateAutoValues';
 import MongoModifier from './MongoModifier';
 import MongoProjection, { MongoFieldsSelector } from './MongoProjection';
+
+const { MongoError } = MongoInternals.NpmModules.mongodb.module;
 
 type FindSelector<T> = Mongo.Selector<T> | string;
 export type FindOneOptions<T, U extends MongoFieldsSelector<T>> = {
@@ -48,11 +49,11 @@ export default class ValidatedCollection<
   async updateSchema(): Promise<void> {
     if (Meteor.isServer) {
       const validator = { $jsonSchema: codecToSchema(this.codec) };
-      const db = this.underlying.rawDatabase() as NpmModuleMongodb.Db;
+      const db = this.underlying.rawDatabase();
       try {
         await db.command({ collMod: this.name, validator });
       } catch (e) {
-        if (!(e instanceof NpmModuleMongodb.MongoError) || e.code !== 26 /* NamespaceNotFound */) {
+        if (!(e instanceof MongoError) || e.code !== 26 /* NamespaceNotFound */) {
           throw e;
         }
 

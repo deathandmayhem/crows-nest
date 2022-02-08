@@ -1,3 +1,9 @@
+type InclusiveFieldsSelector<T> = {
+  [k in keyof T]?: k extends '_id' ? 0 | 1 : 1;
+};
+type ExclusiveFieldsSelector<T> = {
+  [k in keyof T]?: 0;
+};
 /**
  * Fields can either be selected inclusively or exclusively, i.e. values in a
  * `MongoFieldsSelector` must be either all 0 or all 1. When selected
@@ -9,12 +15,6 @@
  * otherwise all 1's.
  */
 export type MongoFieldsSelector<T> = InclusiveFieldsSelector<T> | ExclusiveFieldsSelector<T>;
-type InclusiveFieldsSelector<T> = {
-  [k in keyof T]?: k extends '_id' ? 0 | 1 : 1;
-};
-type ExclusiveFieldsSelector<T> = {
-  [k in keyof T]?: 0;
-};
 
 /**
  * Given a type of a MongoDB schema `T` and a MongoDB-style field selection `U`,

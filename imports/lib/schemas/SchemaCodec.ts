@@ -1,6 +1,38 @@
+/* eslint-disable no-use-before-define */
 import t from 'io-ts';
 import AutoValueType from './AutoValueType';
 import ScalarCodec from './ScalarCodec';
+
+export type NestedProps = {
+  [key: string]: NestedCodec;
+}
+
+type NestedArray<C extends NestedCodec> = t.ArrayC<C>;
+type NestedTuple<CS extends [NestedCodec, ...NestedCodec[]]> = t.TupleC<CS>;
+type NestedInterface<P extends NestedProps> = t.TypeC<P>;
+type NestedPartial<P extends NestedProps> = t.PartialC<P>;
+type NestedIntersection<CS extends [NestedCodec, NestedCodec, ...NestedCodec[]]> =
+  t.IntersectionC<CS>;
+type NestedUnion<CS extends [NestedCodec, NestedCodec, ...NestedCodec[]]> =
+  t.UnionC<CS>;
+
+export type NestedCodec =
+  ScalarCodec |
+  NestedArray<any> |
+  NestedTuple<any> |
+  NestedInterface<any> |
+  NestedPartial<any> |
+  NestedIntersection<any> |
+  NestedUnion<any>;
+
+export type TopLevelProps = {
+  [key: string]: NestedCodec | AutoValueType<any, any>;
+}
+
+type SchemaInterface<P extends TopLevelProps> = t.TypeC<P>;
+type SchemaPartial<P extends TopLevelProps> = t.PartialC<P>;
+type SchemaIntersection<CS extends [SchemaCodec, SchemaCodec, ...SchemaCodec[]]> =
+  t.IntersectionC<CS>;
 
 /**
  * SchemaCodec is the core type that our schema logic is built around. It is the
@@ -27,34 +59,3 @@ export type SchemaCodec =
   SchemaPartial<any> |
   SchemaIntersection<any>;
 export default SchemaCodec;
-
-type SchemaInterface<P extends TopLevelProps> = t.TypeC<P>;
-type SchemaPartial<P extends TopLevelProps> = t.PartialC<P>;
-type SchemaIntersection<CS extends [SchemaCodec, SchemaCodec, ...SchemaCodec[]]> =
-  t.IntersectionC<CS>;
-
-export type TopLevelProps = {
-  [key: string]: NestedCodec | AutoValueType<any, any>;
-}
-
-export type NestedCodec =
-  ScalarCodec |
-  NestedArray<any> |
-  NestedTuple<any> |
-  NestedInterface<any> |
-  NestedPartial<any> |
-  NestedIntersection<any> |
-  NestedUnion<any>;
-
-type NestedArray<C extends NestedCodec> = t.ArrayC<C>;
-type NestedTuple<CS extends [NestedCodec, ...NestedCodec[]]> = t.TupleC<CS>;
-type NestedInterface<P extends NestedProps> = t.TypeC<P>;
-type NestedPartial<P extends NestedProps> = t.PartialC<P>;
-type NestedIntersection<CS extends [NestedCodec, NestedCodec, ...NestedCodec[]]> =
-  t.IntersectionC<CS>;
-type NestedUnion<CS extends [NestedCodec, NestedCodec, ...NestedCodec[]]> =
-  t.UnionC<CS>;
-
-export type NestedProps = {
-  [key: string]: NestedCodec;
-}

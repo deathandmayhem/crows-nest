@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import t from 'io-ts';
 import AutoValueType from './AutoValueType';
 import SchemaCodec, { TopLevelProps } from './SchemaCodec';
@@ -40,7 +41,7 @@ type InterfaceWithoutAutoValues<Codec extends t.TypeC<any>> =
 type IntersectionWithoutAutoValues<
   Codec extends t.IntersectionC<any>,
   CS extends RecombinedCodecs =
-    Codec extends t.IntersectionC<infer CS> ? CS : never,
+    Codec extends t.IntersectionC<infer InferredCS> ? InferredCS : never,
 > =
   t.IntersectionC<SchemaTupleWithoutAutoValues<CS>>;
 
