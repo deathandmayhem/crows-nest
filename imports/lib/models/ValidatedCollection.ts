@@ -6,12 +6,13 @@ import WithoutAutoValues from '../schemas/WithoutAutoValues';
 import codecToSchema from '../schemas/codecToSchema';
 import generateAutoValues from '../schemas/generateAutoValues';
 import MongoModifier from './MongoModifier';
-import MongoProjection, { MongoFieldsSelector } from './MongoProjection';
+import Projected from './Projected';
+import Projection from './Projection';
 
 const { MongoError } = MongoInternals.NpmModules.mongodb.module;
 
 type FindSelector<T> = Mongo.Selector<T> | string;
-export type FindOneOptions<T, U extends MongoFieldsSelector<T>> = {
+export type FindOneOptions<T, U extends Projection<T> | undefined> = {
   sort?: Partial<{ [k in keyof T]: -1 | 1 }>;
   skip?: number;
   fields?: U;
@@ -62,18 +63,18 @@ export default class ValidatedCollection<
     }
   }
 
-  find<U extends MongoFieldsSelector<T>>(
+  find<U extends Projection<T> | undefined = undefined>(
     selector?: FindSelector<T>,
     options?: FindOptions<T, U>,
-  ): Mongo.Cursor<MongoProjection<T, U>> {
-    return this.underlying.find(selector, options as any) as Mongo.Cursor<MongoProjection<T, U>>;
+  ): Mongo.Cursor<Projected<T, U>> {
+    return this.underlying.find(selector, options as any) as Mongo.Cursor<Projected<T, U>>;
   }
 
-  findOne<U extends MongoFieldsSelector<T>>(
+  findOne<U extends Projection<T> | undefined = undefined>(
     selector?: FindSelector<T>,
     options?: FindOneOptions<T, U>,
-  ): MongoProjection<T, U> | undefined {
-    return this.underlying.findOne(selector, options as any) as MongoProjection<T, U> | undefined;
+  ): Projected<T, U> | undefined {
+    return this.underlying.findOne(selector, options as any) as Projected<T, U> | undefined;
   }
 
   insert(doc: WithoutAutoValues<Codec>, callback?: (err?: Error, id?: T['_id']) => void): T['_id'] {
